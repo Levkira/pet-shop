@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        cream: '#fef6ed',
+        cream: '#FFF',
         sand: '#EAE0C8',
         forest: '#1F3A2E',
         mustard: '#E4B94A',

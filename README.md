@@ -11,6 +11,8 @@ styled with Tailwind.
 
 ## Features
 
+- 🏠 Landing page with featured (top-rated) products, trust badges, and
+  brand copy
 - 🔍 Product catalog with search, sort (price/rating), star ratings, and
   loading states
 - 📄 Product detail pages with a quantity selector and customer reviews
@@ -95,8 +97,8 @@ src/
     ui/uiSlice.ts               toast notification state
   store.ts                     Redux store setup + localStorage cart persistence
   hooks.ts                     typed useAppSelector/useAppDispatch
-  components/                  Nav, ProductCard, CartList, QuantityStepper,
-                                Rating, Toast, Seo
+  components/                  Nav, ProductCard, ProductCardSkeleton, CartList,
+                                QuantityStepper, Rating, Toast, Seo
   pages/                       HomePage, ProductsPage, ProductDetailPage,
                                 CartPage, CheckoutPage, NotFoundPage
   Shop.tsx                     route definitions
