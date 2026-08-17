@@ -123,24 +123,8 @@ e2e/                            Playwright (chromium, firefox, webkit)
 .github/workflows/ci.yml       lint, test, build, and e2e on every push/PR
 ```
 
-## Mock services
+## Mock service
 
-Two things in this app are mocked by default:
-
-- **Products API** (`src/api/productsApi.ts`) — a real RTK Query slice
-  (`getProducts`/`getProductById`, with cache tags and loading/error
-  states). By default its `baseQuery` resolves against the local catalog
-  with a simulated network delay instead of a real HTTP call, but this is
-  a genuine runtime switch, not just a described path: set
-  `VITE_API_BASE_URL` (copy `.env.example` to `.env.local`) and every
-  request is proxied through `fetchBaseQuery` to a real backend instead —
-  no other code changes. The included `server/` folder is a proper
-  layered **Express** app (routes → controllers → centralized error
-  handling, plus `cors`/`helmet`/`morgan` middleware — see
-  [server/README.md](./server/README.md) for the full architecture) that
-  implements the matching `GET /products` / `GET /products/:id`
-  endpoints; run it with `npm run server`. Point `VITE_API_BASE_URL` at
-  any backend that serves the same shape, real or otherwise.
 - **Checkout** (`src/pages/CheckoutPage.tsx`) — the form validates for
   real, but submitting just simulates a short delay, generates a fake
   order number, and clears the cart. No payment provider is called.
