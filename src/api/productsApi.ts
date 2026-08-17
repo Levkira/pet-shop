@@ -1,4 +1,8 @@
-import { createApi, type BaseQueryFn } from '@reduxjs/toolkit/query/react';
+import {
+  createApi,
+  fetchBaseQuery,
+  type BaseQueryFn,
+} from '@reduxjs/toolkit/query/react';
 import { products as catalog } from '../data/products';
 import type { Product } from '../types';
 
@@ -8,11 +12,30 @@ function delay<T>(value: T): Promise<T> {
   return new Promise((resolve) => setTimeout(() => resolve(value), SIMULATED_LATENCY_MS));
 }
 
-const mockBaseQuery: BaseQueryFn<
-  { endpoint: 'getProducts' } | { endpoint: 'getProductById'; id: string },
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const realBaseQuery = API_BASE_URL ? fetchBaseQuery({ baseUrl: API_BASE_URL }) : null;
+
+type ProductsApiArgs =
+  | { endpoint: 'getProducts' }
+  | { endpoint: 'getProductById'; id: string };
+
+const combinedBaseQuery: BaseQueryFn<
+  ProductsApiArgs,
   unknown,
   { status: number; message: string }
-> = async (args) => {
+> = async (args, api, extraOptions) => {
+  if (realBaseQuery) {
+    const path =
+      args.endpoint === 'getProducts' ? '/products' : `/products/${args.id}`;
+    const result = await realBaseQuery(path, api, extraOptions);
+    if (result.error) {
+      const status =
+        typeof result.error.status === 'number' ? result.error.status : 500;
+      return { error: { status, message: `Request to ${path} failed` } };
+    }
+    return { data: result.data };
+  }
+
   if (args.endpoint === 'getProducts') {
     return { data: await delay(catalog) };
   }
@@ -26,7 +49,7 @@ const mockBaseQuery: BaseQueryFn<
 
 export const productsApi = createApi({
   reducerPath: 'productsApi',
-  baseQuery: mockBaseQuery,
+  baseQuery: combinedBaseQuery,
   tagTypes: ['Product'],
   endpoints: (builder) => ({
     getProducts: builder.query<Product[], void>({

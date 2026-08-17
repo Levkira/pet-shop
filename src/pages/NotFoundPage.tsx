@@ -8,7 +8,7 @@ export default function NotFoundPage() {
         <title>Page not found | Pet Shop</title>
         <meta name="robots" content="noindex" />
       </Helmet>
-      <p className="font-display text-2xl text-ink">Page not found</p>
+      <h1 className="font-display text-2xl text-ink">Page not found</h1>
       <p className="mt-2 text-sm text-ink/60">
         The page you're looking for doesn't exist.
       </p>

@@ -44,7 +44,7 @@ export default function CheckoutPage() {
     return (
       <div className="mx-auto max-w-md px-4 py-16 text-center">
         <Seo title="Order confirmed" description="Your order has been placed." />
-        <p className="font-display text-2xl text-ink">Order placed!</p>
+        <h1 className="font-display text-2xl text-ink">Order placed!</h1>
         <p className="mt-2 text-sm text-ink/60">
           Order <span className="font-mono text-ink">#{orderNumber}</span> is
           confirmed. This is a mock checkout, so no payment was actually
@@ -63,7 +63,7 @@ export default function CheckoutPage() {
   if (rows.length === 0) {
     return (
       <div className="mx-auto max-w-md px-4 py-16 text-center">
-        <p className="font-display text-xl text-ink">Nothing to check out</p>
+        <h1 className="font-display text-xl text-ink">Nothing to check out</h1>
         <Link
           to="/products"
           className="mt-4 inline-block text-sm text-forest hover:underline"

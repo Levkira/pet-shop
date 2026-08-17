@@ -2,6 +2,7 @@ node_modules
 dist
 .DS_Store
 *.local
+.env
 playwright-report
 test-results
 blob-report

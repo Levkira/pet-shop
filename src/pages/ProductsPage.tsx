@@ -1,10 +1,12 @@
 import { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useAppDispatch } from '../hooks';
 import { useGetProductsQuery } from '../api/productsApi';
 import { addToCart } from '../features/cart/cartSlice';
 import { showToast } from '../features/ui/uiSlice';
 import ProductCard from '../components/ProductCard';
 import ProductCardSkeleton from '../components/ProductCardSkeleton';
+import Pagination from '../components/Pagination';
 import Seo from '../components/Seo';
 import type { Product } from '../types';
 
@@ -16,6 +18,8 @@ const SORT_LABELS: Record<SortOption, string> = {
   'price-desc': 'Price: high to low',
   rating: 'Highest rated',
 };
+
+export const PAGE_SIZE = 4;
 
 function sortProducts(products: Product[], sortBy: SortOption): Product[] {
   const sorted = [...products];
@@ -37,6 +41,22 @@ export default function ProductsPage() {
   const [query, setQuery] = useState('');
   const [sortBy, setSortBy] = useState<SortOption>('featured');
 
+  const [searchParams, setSearchParams] = useSearchParams();
+  const requestedPage = Number(searchParams.get('page'));
+  const page = Number.isFinite(requestedPage) && requestedPage >= 1 ? requestedPage : 1;
+
+  const goToPage = (nextPage: number) => {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      if (nextPage <= 1) {
+        next.delete('page');
+      } else {
+        next.set('page', String(nextPage));
+      }
+      return next;
+    });
+  };
+
   const visibleProducts = useMemo(() => {
     if (!products) return [];
     const trimmed = query.trim().toLowerCase();
@@ -49,6 +69,25 @@ export default function ProductsPage() {
       : products;
     return sortProducts(filtered, sortBy);
   }, [products, query, sortBy]);
+
+  const totalPages = Math.max(1, Math.ceil(visibleProducts.length / PAGE_SIZE));
+
+  const currentPage = Math.min(Math.max(1, page), totalPages);
+
+  const pageProducts = visibleProducts.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE
+  );
+
+  const handleQueryChange = (value: string) => {
+    setQuery(value);
+    goToPage(1);
+  };
+
+  const handleSortChange = (value: SortOption) => {
+    setSortBy(value);
+    goToPage(1);
+  };
 
   const handleAddToCart = (id: string) => {
     const product = products?.find((p) => p.id === id);
@@ -65,11 +104,13 @@ export default function ProductsPage() {
         description="Browse scratchers, beds, tunnels, and toys for your pet."
       />
 
+      <h1 className="mb-6 font-display text-2xl text-ink">Products</h1>
+
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <input
           type="search"
           value={query}
-          onChange={(event) => setQuery(event.target.value)}
+          onChange={(event) => handleQueryChange(event.target.value)}
           placeholder="Search products…"
           aria-label="Search products"
           className="w-full rounded-full border border-ink/15 bg-white px-4 py-2 text-sm outline-none focus:border-forest sm:max-w-xs"
@@ -78,7 +119,7 @@ export default function ProductsPage() {
           Sort by
           <select
             value={sortBy}
-            onChange={(event) => setSortBy(event.target.value as SortOption)}
+            onChange={(event) => handleSortChange(event.target.value as SortOption)}
             className="rounded-full border border-ink/15 bg-white px-3 py-2 text-sm outline-none focus:border-forest"
           >
             {Object.entries(SORT_LABELS).map(([value, label]) => (
@@ -111,15 +152,19 @@ export default function ProductsPage() {
       )}
 
       {!isLoading && !isError && visibleProducts.length > 0 && (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {visibleProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onAddToCart={handleAddToCart}
-            />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {pageProducts.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onAddToCart={handleAddToCart}
+              />
+            ))}
+          </div>
+
+          <Pagination page={currentPage} totalPages={totalPages} onPageChange={goToPage} />
+        </>
       )}
     </div>
   );

@@ -21,7 +21,7 @@ export default function CartPage() {
     return (
       <div className="mx-auto max-w-3xl px-4 py-16 text-center">
         <Seo title="Cart" description="Review the items in your cart." />
-        <p className="font-display text-xl text-ink">Your cart is empty</p>
+        <h1 className="font-display text-xl text-ink">Your cart is empty</h1>
         <p className="mt-2 text-sm text-ink/60">
           Add a few things from the products page to see them here.
         </p>
@@ -38,6 +38,7 @@ export default function CartPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
       <Seo title="Cart" description="Review the items in your cart." />
+      <h1 className="mb-4 font-display text-xl text-ink">Your Cart</h1>
       <ul>
         {rows.map(({ item, product }) => (
           <CartList

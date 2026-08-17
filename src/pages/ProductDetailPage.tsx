@@ -34,7 +34,7 @@ export default function ProductDetailPage() {
   if (isError || !product) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-16 text-center">
-        <p className="font-display text-xl text-ink">Product not found</p>
+        <h1 className="font-display text-xl text-ink">Product not found</h1>
         <Link to="/products" className="mt-4 inline-block text-sm text-forest hover:underline">
           Back to products
         </Link>
