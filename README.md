@@ -2,11 +2,7 @@
 
 A small e-commerce demo — browse pet products, read reviews, add them to
 a cart, and check out. React + TypeScript + Redux Toolkit on the
-frontend, backed by a real Express API.
-
-Runs with **zero setup** against fast in-memory data, or against the
-included **Express backend** with one extra command — see
-[Backend](#backend) below.
+frontend, backed by Express API.
 
 ## Features
 
