@@ -15,7 +15,15 @@ describe('getPaginationItems', () => {
 
   it('windows around the current page with ellipses for large page counts', () => {
     expect(getPaginationItems(1, 20)).toEqual([1, 2, 'ellipsis', 20]);
-    expect(getPaginationItems(10, 20)).toEqual([1, 'ellipsis', 9, 10, 11, 'ellipsis', 20]);
+    expect(getPaginationItems(10, 20)).toEqual([
+      1,
+      'ellipsis',
+      9,
+      10,
+      11,
+      'ellipsis',
+      20,
+    ]);
     expect(getPaginationItems(20, 20)).toEqual([1, 'ellipsis', 19, 20]);
   });
 });

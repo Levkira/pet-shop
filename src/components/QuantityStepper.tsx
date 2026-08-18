@@ -19,9 +19,7 @@ export default function QuantityStepper({
       >
         &minus;
       </button>
-      <span className="w-8 text-center font-mono text-sm tabular-nums">
-        {amount}
-      </span>
+      <span className="w-8 text-center font-mono text-sm tabular-nums">{amount}</span>
       <button
         type="button"
         onClick={onIncrease}

@@ -8,10 +8,7 @@ test('add to cart, check out, and see an order confirmation', async ({ page }) =
   await expect(firstCard).toBeVisible();
   const productTitle = await firstCard.textContent();
 
-  await page
-    .getByRole('button', { name: 'Add to cart' })
-    .first()
-    .click();
+  await page.getByRole('button', { name: 'Add to cart' }).first().click();
 
   // Toast confirms the add.
   await expect(page.getByRole('status')).toContainText('Added');

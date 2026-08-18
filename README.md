@@ -29,17 +29,17 @@ included **Express backend** with one extra command — see
 
 ## Tech stack
 
-| | |
-|---|---|
-| **Frontend** | React 18 + TypeScript, Vite |
-| **State** | Redux Toolkit, RTK Query |
-| **Routing** | React Router |
-| **Styling** | Tailwind CSS |
-| **Forms** | React Hook Form + Zod |
-| **SEO** | react-helmet-async |
-| **Backend** | Express, cors, helmet, morgan |
-| **Testing** | Vitest, React Testing Library, Playwright |
-| **Tooling** | ESLint, Prettier, GitHub Actions |
+|              |                                           |
+| ------------ | ----------------------------------------- |
+| **Frontend** | React 18 + TypeScript, Vite               |
+| **State**    | Redux Toolkit, RTK Query                  |
+| **Routing**  | React Router                              |
+| **Styling**  | Tailwind CSS                              |
+| **Forms**    | React Hook Form + Zod                     |
+| **SEO**      | react-helmet-async                        |
+| **Backend**  | Express, cors, helmet, morgan             |
+| **Testing**  | Vitest, React Testing Library, Playwright |
+| **Tooling**  | ESLint, Prettier, GitHub Actions          |
 
 ## Getting started
 
@@ -52,18 +52,18 @@ npm run dev
 
 ## Available scripts
 
-| Command | Description |
-|---|---|
-| `npm run dev` | Start the frontend dev server |
-| `npm run server` | Start the Express backend on `http://localhost:4000` |
-| `npm run build` | Type-check and build the frontend for production |
-| `npm run preview` | Preview the production build locally |
-| `npm run test` | Run unit/component tests in watch mode |
-| `npm run test:run` | Run unit/component tests once |
-| `npm run test:e2e` | Run Playwright end-to-end tests (starts the dev server itself) |
-| `npm run lint` | Lint the codebase |
-| `npm run format` | Format the codebase with Prettier |
-| `npm run format:check` | Check formatting without writing changes |
+| Command                | Description                                                    |
+| ---------------------- | -------------------------------------------------------------- |
+| `npm run dev`          | Start the frontend dev server                                  |
+| `npm run server`       | Start the Express backend on `http://localhost:4000`           |
+| `npm run build`        | Type-check and build the frontend for production               |
+| `npm run preview`      | Preview the production build locally                           |
+| `npm run test`         | Run unit/component tests in watch mode                         |
+| `npm run test:run`     | Run unit/component tests once                                  |
+| `npm run test:e2e`     | Run Playwright end-to-end tests (starts the dev server itself) |
+| `npm run lint`         | Lint the codebase                                              |
+| `npm run format`       | Format the codebase with Prettier                              |
+| `npm run format:check` | Check formatting without writing changes                       |
 
 ## Testing
 
@@ -80,7 +80,7 @@ add-to-cart → checkout → confirmation flow, form validation, and product
 search/sort/navigation. They run against Chromium, Firefox, and WebKit.
 
 ```bash
-npx playwright install  
+npx playwright install
 npm run test:e2e
 ```
 
@@ -106,10 +106,10 @@ src/
                                 CartPage, CheckoutPage, NotFoundPage
   Shop.tsx                     route definitions, skip link, error boundary
   App.tsx                      Redux/Router/Helmet providers
-server/                        the Express backend 
+server/                        the Express backend
   index.js                     entry point — starts the app on a real port
   app.js                       Express app factory (middleware, routes)
-  data.js                       catalog data 
+  data.js                       catalog data
   routes/products.routes.js     path → controller mapping
   controllers/products.controller.js  request handlers
   middleware/                   notFound.js, errorHandler.js
@@ -127,10 +127,10 @@ See [server/README.md](./server/README.md) for the full architecture and
 how to add a new resource. To use it:
 
 ```bash
-npm run server             
+npm run server
 cp .env.example .env.local
 ```
 
-**Checkout** (`src/pages/CheckoutPage.tsx`) is mocked — the form 
+**Checkout** (`src/pages/CheckoutPage.tsx`) is mocked — the form
 validates for real, but submitting just simulates a short delay,
 generates a fake order number, and clears the cart.

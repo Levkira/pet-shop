@@ -31,9 +31,7 @@ describe('HomePage', () => {
   it('shows the three highest-rated products as featured', async () => {
     renderPage();
 
-    const topThree = [...products]
-      .sort((a, b) => b.rating - a.rating)
-      .slice(0, 3);
+    const topThree = [...products].sort((a, b) => b.rating - a.rating).slice(0, 3);
 
     for (const product of topThree) {
       expect(

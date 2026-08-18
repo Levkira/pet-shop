@@ -8,7 +8,10 @@ interface ErrorBoundaryState {
   error: Error | null;
 }
 
-export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+export default class ErrorBoundary extends Component<
+  ErrorBoundaryProps,
+  ErrorBoundaryState
+> {
   state: ErrorBoundaryState = { error: null };
 
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
@@ -29,8 +32,7 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
         <div className="mx-auto max-w-md px-4 py-16 text-center">
           <h1 className="font-display text-2xl text-ink">Something went wrong</h1>
           <p className="mt-2 text-sm text-ink/60">
-            This page hit an unexpected error. You can try again, or head
-            back home.
+            This page hit an unexpected error. You can try again, or head back home.
           </p>
           <div className="mt-6 flex justify-center gap-3">
             <button

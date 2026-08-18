@@ -56,9 +56,7 @@ export default function CartPage() {
         ))}
       </ul>
       <div className="mt-6 flex items-center justify-between">
-        <span className="font-display text-xl text-ink">
-          Total ${total.toFixed(2)}
-        </span>
+        <span className="font-display text-xl text-ink">Total ${total.toFixed(2)}</span>
         <Link
           to="/checkout"
           className="rounded-full bg-forest px-6 py-2 font-medium text-white transition-colors hover:bg-forest/90"

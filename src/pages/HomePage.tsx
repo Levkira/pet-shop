@@ -34,9 +34,7 @@ export default function HomePage() {
   const { data: products, isLoading, isError } = useGetProductsQuery();
   const dispatch = useAppDispatch();
 
-  const featured = [...(products ?? [])]
-    .sort((a, b) => b.rating - a.rating)
-    .slice(0, 3);
+  const featured = [...(products ?? [])].sort((a, b) => b.rating - a.rating).slice(0, 3);
 
   const totalReviews = (products ?? []).reduce((sum, p) => sum + p.reviewCount, 0);
   const averageRating = products?.length
@@ -69,10 +67,10 @@ export default function HomePage() {
               Everything your pet needs, delivered with love
             </h1>
             <p className="mt-4 text-base leading-relaxed text-ink/70">
-              From scratchers to snuggly beds, we handpick every product for
-              comfort, durability, and tail-wagging approval. No filler, no
-              gimmicks — just things pets actually use, chosen by people who
-              live with the same shredded couch corners you do.
+              From scratchers to snuggly beds, we handpick every product for comfort,
+              durability, and tail-wagging approval. No filler, no gimmicks — just things
+              pets actually use, chosen by people who live with the same shredded couch
+              corners you do.
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-4">
               <Link
@@ -83,8 +81,7 @@ export default function HomePage() {
               </Link>
               {averageRating !== null && (
                 <span className="text-sm text-ink/60">
-                  ★ {averageRating.toFixed(1)} average rating from{' '}
-                  {totalReviews} reviews
+                  ★ {averageRating.toFixed(1)} average rating from {totalReviews} reviews
                 </span>
               )}
             </div>
@@ -161,16 +158,13 @@ export default function HomePage() {
       {/* Brand story */}
       <section className="bg-forest/5">
         <div className="mx-auto max-w-3xl px-4 py-16 text-center">
-          <h2 className="font-display text-2xl text-ink">
-            Why we started Pet Shop
-          </h2>
+          <h2 className="font-display text-2xl text-ink">Why we started Pet Shop</h2>
           <p className="mt-4 text-sm leading-relaxed text-ink/70">
-            We started Pet Shop after one too many trips to return flimsy,
-            mass-produced pet gear that didn't survive a single afternoon.
-            Every product here is chosen — and used — by the people who pick
-            it, tested against the toughest critics we know: our own cats and
-            dogs. If it doesn't earn a spot in our own homes, it doesn't earn
-            a spot in the shop.
+            We started Pet Shop after one too many trips to return flimsy, mass-produced
+            pet gear that didn't survive a single afternoon. Every product here is chosen
+            — and used — by the people who pick it, tested against the toughest critics we
+            know: our own cats and dogs. If it doesn't earn a spot in our own homes, it
+            doesn't earn a spot in the shop.
           </p>
         </div>
       </section>

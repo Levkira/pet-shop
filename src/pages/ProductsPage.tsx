@@ -163,7 +163,11 @@ export default function ProductsPage() {
             ))}
           </div>
 
-          <Pagination page={currentPage} totalPages={totalPages} onPageChange={goToPage} />
+          <Pagination
+            page={currentPage}
+            totalPages={totalPages}
+            onPageChange={goToPage}
+          />
         </>
       )}
     </div>

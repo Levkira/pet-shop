@@ -10,7 +10,10 @@ interface ProductCardProps {
 export default function ProductCard({ product, onAddToCart }: ProductCardProps) {
   return (
     <div className="group flex flex-col overflow-hidden rounded-2xl border border-ink/10 bg-white shadow-sm transition-shadow hover:shadow-md">
-      <Link to={`/products/${product.id}`} className="relative block aspect-square overflow-hidden bg-sand">
+      <Link
+        to={`/products/${product.id}`}
+        className="relative block aspect-square overflow-hidden bg-sand"
+      >
         <img
           src={product.imageUrl}
           alt={product.title}
@@ -28,9 +31,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
           </Link>
         </h3>
         <Rating rating={product.rating} reviewCount={product.reviewCount} />
-        <p className="line-clamp-3 flex-1 text-sm text-ink/60">
-          {product.description}
-        </p>
+        <p className="line-clamp-3 flex-1 text-sm text-ink/60">{product.description}</p>
         <button
           type="button"
           onClick={() => onAddToCart(product.id)}

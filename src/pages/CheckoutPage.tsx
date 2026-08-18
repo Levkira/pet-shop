@@ -46,9 +46,8 @@ export default function CheckoutPage() {
         <Seo title="Order confirmed" description="Your order has been placed." />
         <h1 className="font-display text-2xl text-ink">Order placed!</h1>
         <p className="mt-2 text-sm text-ink/60">
-          Order <span className="font-mono text-ink">#{orderNumber}</span> is
-          confirmed. This is a mock checkout, so no payment was actually
-          taken.
+          Order <span className="font-mono text-ink">#{orderNumber}</span> is confirmed.
+          This is a mock checkout, so no payment was actually taken.
         </p>
         <Link
           to="/products"
@@ -91,7 +90,11 @@ export default function CheckoutPage() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} noValidate className="mt-6 flex flex-col gap-4">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        noValidate
+        className="mt-6 flex flex-col gap-4"
+      >
         <label className="flex flex-col gap-1 text-sm text-ink/80">
           Full name
           <input

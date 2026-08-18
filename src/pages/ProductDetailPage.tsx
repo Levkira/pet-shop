@@ -10,7 +10,11 @@ import Seo from '../components/Seo';
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const { data: product, isLoading, isError } = useGetProductByIdQuery(id ?? '', {
+  const {
+    data: product,
+    isLoading,
+    isError,
+  } = useGetProductByIdQuery(id ?? '', {
     skip: !id,
   });
   const dispatch = useAppDispatch();
@@ -35,7 +39,10 @@ export default function ProductDetailPage() {
     return (
       <div className="mx-auto max-w-3xl px-4 py-16 text-center">
         <h1 className="font-display text-xl text-ink">Product not found</h1>
-        <Link to="/products" className="mt-4 inline-block text-sm text-forest hover:underline">
+        <Link
+          to="/products"
+          className="mt-4 inline-block text-sm text-forest hover:underline"
+        >
           Back to products
         </Link>
       </div>
@@ -77,9 +84,7 @@ export default function ProductDetailPage() {
           <span className="font-mono text-xl text-forest">
             ${product.price.toFixed(2)}
           </span>
-          <p className="text-sm leading-relaxed text-ink/70">
-            {product.description}
-          </p>
+          <p className="text-sm leading-relaxed text-ink/70">{product.description}</p>
           <div className="mt-2 flex items-center gap-4">
             <QuantityStepper
               amount={amount}
@@ -102,7 +107,10 @@ export default function ProductDetailPage() {
           <h2 className="font-display text-xl text-ink">Reviews</h2>
           <ul className="mt-4 flex flex-col gap-4">
             {product.reviews.map((review) => (
-              <li key={review.id} className="rounded-2xl border border-ink/10 bg-white p-4">
+              <li
+                key={review.id}
+                className="rounded-2xl border border-ink/10 bg-white p-4"
+              >
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-ink">{review.author}</span>
                   <Rating rating={review.rating} />

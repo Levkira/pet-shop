@@ -8,10 +8,7 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: {
-      reducer: (
-        state,
-        action: PayloadAction<{ id: string; amount: number }>
-      ) => {
+      reducer: (state, action: PayloadAction<{ id: string; amount: number }>) => {
         const { id, amount } = action.payload;
         const existing = state.find((item) => item.id === id);
         if (existing) {
@@ -28,10 +25,7 @@ const cartSlice = createSlice({
     clearCart: () => {
       return [];
     },
-    changeAmount: (
-      state,
-      action: PayloadAction<{ id: string; amount: number }>
-    ) => {
+    changeAmount: (state, action: PayloadAction<{ id: string; amount: number }>) => {
       const item = state.find((item) => item.id === action.payload.id);
       if (item) {
         item.amount = Math.max(1, action.payload.amount);
@@ -40,6 +34,5 @@ const cartSlice = createSlice({
   },
 });
 
-export const { addToCart, removeFromCart, changeAmount, clearCart } =
-  cartSlice.actions;
+export const { addToCart, removeFromCart, changeAmount, clearCart } = cartSlice.actions;
 export default cartSlice.reducer;

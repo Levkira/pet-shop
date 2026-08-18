@@ -49,7 +49,9 @@ describe('useSyncCartWithCatalog', () => {
 
     await waitFor(
       () => {
-        expect(productsApi.endpoints.getProducts.select()(store.getState()).data).toBeDefined();
+        expect(
+          productsApi.endpoints.getProducts.select()(store.getState()).data
+        ).toBeDefined();
       },
       { timeout: 3000 }
     );

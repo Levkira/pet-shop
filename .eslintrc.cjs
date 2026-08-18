@@ -17,9 +17,6 @@ module.exports = {
   ignorePatterns: ['dist', 'node_modules', 'playwright-report', 'test-results'],
   rules: {
     '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
-    'react-refresh/only-export-components': [
-      'warn',
-      { allowConstantExport: true },
-    ],
+    'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
   },
 };
