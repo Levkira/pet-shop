@@ -22,13 +22,10 @@ export function createApp() {
     res.json({ status: 'ok' });
   });
 
-  app.use('/products', productsRouter);
   app.use('/api/products', productsRouter);
 
   app.use(notFound);
   app.use(errorHandler);
-
-  // REMOVE app.listen(...) from here!
 
   return app;
 }

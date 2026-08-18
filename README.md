@@ -93,7 +93,6 @@ npm run test:e2e
 src/
   types.ts                    Product, Review, CartItem types
   vite-env.d.ts                Vite ambient types (import.meta.env, etc.)
-  data/products.ts            static product catalog (the mock "backing store")
   api/productsApi.ts          RTK Query slice — mock by default, or the real
                                 Express backend via VITE_API_BASE_URL (see below)
   features/

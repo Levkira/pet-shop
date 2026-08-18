@@ -1,7 +1,6 @@
 import { products } from '../data.js';
 
 export function getProducts(_req, res) {
-  console.log(products)
   res.json(products);
 }
 

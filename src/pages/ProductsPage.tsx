@@ -19,7 +19,7 @@ const SORT_LABELS: Record<SortOption, string> = {
   rating: 'Highest rated',
 };
 
-export const PAGE_SIZE = 4;
+export const PAGE_SIZE = 6;
 
 function sortProducts(products: Product[], sortBy: SortOption): Product[] {
   const sorted = [...products];
