@@ -1,44 +1,43 @@
 # 🐾 Pet Shop
 
 A small e-commerce demo — browse pet products, read reviews, add them to
-a cart, and check out. Built with React, TypeScript, and Redux Toolkit,
-styled with Tailwind.
+a cart, and check out. React + TypeScript + Redux Toolkit on the
+frontend, backed by a real Express API.
 
-> **Note:** the product catalog and checkout are both mocked by default.
-> There's no real payment processor, but there **is** a real Express
-> backend included (`server/`) that you can point the frontend at — see
-> [Mock services](#mock-services) below.
+Runs with **zero setup** against fast in-memory data, or against the
+included **Express backend** with one extra command — see
+[Backend](#backend) below.
 
 ## Features
 
-- 🏠 Landing page with featured (top-rated) products, trust badges, and
+- Landing page with featured (top-rated) products, trust badges, and
   brand copy
-- 🔍 Product catalog with search, sort (price/rating), URL-synced
+- Product catalog with search, sort (price/rating), URL-synced
   numbered pagination, star ratings, and loading states
-- 📄 Product detail pages with a quantity selector and customer reviews
-- 🛒 Persistent cart (survives page reloads) with quantity controls
-- 💳 Checkout flow with real form validation and an order confirmation
-- 🔔 Toast notifications on add-to-cart
-- 🔎 Per-page SEO tags (title, meta description, Open Graph)
-- ♿ Skip-to-content link, visible focus states, one `<h1>` per page, and
+- Product detail pages with a quantity selector and customer reviews
+- Persistent cart (survives page reloads) with quantity controls
+- Checkout flow with real form validation and an order confirmation
+- Toast notifications on add-to-cart
+- Per-page SEO tags (title, meta description, Open Graph)
+- Skip-to-content link, visible focus states, one `<h1>` per page, and
   an error boundary so a page crash doesn't blank the whole app
-- 🔌 Mocked products API by default, with a real Express backend included
-  (`server/`) that you can point the frontend at instead
-- ✅ Unit, component, and end-to-end (cross-browser) test coverage
-- 🧹 ESLint + Prettier, and a CI pipeline that runs all of it
+- Express backend (`server/`) — routes, controllers,
+  centralized error handling — that the frontend can point at instead of
+  its default in-memory data, via a single env var
+- Unit, component, and end-to-end (cross-browser) test coverage
+- ESLint + Prettier, and a CI pipeline that runs all of it
 
 ## Tech stack
 
 | | |
 |---|---|
-| **Framework** | React 18 + TypeScript |
-| **Build tool** | Vite |
+| **Frontend** | React 18 + TypeScript, Vite |
 | **State** | Redux Toolkit, RTK Query |
 | **Routing** | React Router |
 | **Styling** | Tailwind CSS |
 | **Forms** | React Hook Form + Zod |
 | **SEO** | react-helmet-async |
-| **Demo backend** | Express, cors, helmet, morgan |
+| **Backend** | Express, cors, helmet, morgan |
 | **Testing** | Vitest, React Testing Library, Playwright |
 | **Tooling** | ESLint, Prettier, GitHub Actions |
 
@@ -51,15 +50,13 @@ npm install
 npm run dev
 ```
 
-The app runs at `http://localhost:5173`.
-
 ## Available scripts
 
 | Command | Description |
 |---|---|
-| `npm run dev` | Start the dev server |
-| `npm run server` | Start the demo Express backend on `http://localhost:4000` |
-| `npm run build` | Type-check and build for production |
+| `npm run dev` | Start the frontend dev server |
+| `npm run server` | Start the Express backend on `http://localhost:4000` |
+| `npm run build` | Type-check and build the frontend for production |
 | `npm run preview` | Preview the production build locally |
 | `npm run test` | Run unit/component tests in watch mode |
 | `npm run test:run` | Run unit/component tests once |
@@ -71,8 +68,8 @@ The app runs at `http://localhost:5173`.
 ## Testing
 
 **Unit & component tests** (Vitest + React Testing Library) live in
-`tests/` and cover the cart reducer, the mocked products API, the demo
-Express backend, and every page.
+`tests/` and cover the cart reducer, the products API layer, the Express
+backend itself, and every page.
 
 ```bash
 npm run test:run
@@ -93,8 +90,7 @@ npm run test:e2e
 src/
   types.ts                    Product, Review, CartItem types
   vite-env.d.ts                Vite ambient types (import.meta.env, etc.)
-  api/productsApi.ts          RTK Query slice — mock by default, or the real
-                                Express backend via VITE_API_BASE_URL (see below)
+  api/productsApi.ts          RTK Query slice — Express backend via VITE_API_BASE_URL
   features/
     cart/
       cartSlice.ts             add/remove/update/clear cart items
@@ -110,10 +106,10 @@ src/
                                 CartPage, CheckoutPage, NotFoundPage
   Shop.tsx                     route definitions, skip link, error boundary
   App.tsx                      Redux/Router/Helmet providers
-server/                        real Express backend (see server/README.md)
+server/                        the Express backend 
   index.js                     entry point — starts the app on a real port
   app.js                       Express app factory (middleware, routes)
-  data.js                       plain-JS copy of the catalog (see file header)
+  data.js                       catalog data 
   routes/products.routes.js     path → controller mapping
   controllers/products.controller.js  request handlers
   middleware/                   notFound.js, errorHandler.js
@@ -122,10 +118,19 @@ e2e/                            Playwright (chromium, firefox, webkit)
 .github/workflows/ci.yml       lint, test, build, and e2e on every push/PR
 ```
 
-## Mock service
+## Backend
 
-- **Checkout** (`src/pages/CheckoutPage.tsx`) — the form validates for
-  real, but submitting just simulates a short delay, generates a fake
-  order number, and clears the cart. No payment provider is called.
-  Swapping in something like Stripe means replacing the `setTimeout` with
-  a real API call.
+**Express (`server/`).** A real backend: `app.js` builds a layered
+Express app (routes → controllers → centralized error handling), with
+`cors`, `helmet`, and `morgan` middleware and a `GET /health` endpoint.
+See [server/README.md](./server/README.md) for the full architecture and
+how to add a new resource. To use it:
+
+```bash
+npm run server             
+cp .env.example .env.local
+```
+
+**Checkout** (`src/pages/CheckoutPage.tsx`) is mocked — the form 
+validates for real, but submitting just simulates a short delay,
+generates a fake order number, and clears the cart.
