@@ -18,8 +18,7 @@ frontend, backed by Express API.
 - Skip-to-content link, visible focus states, one `<h1>` per page, and
   an error boundary so a page crash doesn't blank the whole app
 - Express backend (`server/`) — routes, controllers,
-  centralized error handling — that the frontend can point at instead of
-  its default in-memory data, via a single env var
+  centralized error handling
 - Unit, component, and end-to-end (cross-browser) test coverage
 - ESLint + Prettier, and a CI pipeline that runs all of it
 
