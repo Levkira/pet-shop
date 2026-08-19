@@ -5,7 +5,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import cartReducer from '../src/features/cart/cartSlice';
 import uiReducer from '../src/features/ui/uiSlice';
 import { productsApi } from '../src/api/productsApi';
-import { products } from '../src/data/products';
+import { products } from '../server/data.js';
 import ProductsPage, { PAGE_SIZE } from '../src/pages/ProductsPage';
 import { AppProviders } from './test-utils';
 

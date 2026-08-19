@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import cartReducer from '../src/features/cart/cartSlice';
 import { productsApi } from '../src/api/productsApi';
-import { products } from '../src/data/products';
+import { products } from '../server/data.js';
 import { useSyncCartWithCatalog } from '../src/features/cart/useSyncCartWithCatalog';
 
 function makeStore(cartState: { id: string; amount: number }[]) {

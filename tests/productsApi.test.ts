@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { configureStore } from '@reduxjs/toolkit';
 import { productsApi } from '../src/api/productsApi';
-import { products } from '../src/data/products';
+import { products } from '../server/data.js';
 
 function makeStore() {
   return configureStore({

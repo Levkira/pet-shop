@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { configureStore } from '@reduxjs/toolkit';
 import cartReducer from '../src/features/cart/cartSlice';
 import { productsApi } from '../src/api/productsApi';
-import { products } from '../src/data/products';
+import { products } from '../server/data.js';
 import CartPage from '../src/pages/CartPage';
 import { AppProviders } from './test-utils';
 
