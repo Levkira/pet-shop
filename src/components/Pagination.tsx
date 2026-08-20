@@ -6,6 +6,9 @@ export function getPaginationItems(
   delta = 1
 ): PageItem[] {
   if (total <= 1) return [];
+  if (total <= delta * 4 + 1) {
+    return Array.from({ length: total }, (_, index) => index + 1);
+  }
 
   const middle: number[] = [];
   for (

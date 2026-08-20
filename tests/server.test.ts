@@ -32,38 +32,37 @@ describe('demo backend (Express)', () => {
     expect(await res.json()).toEqual({ status: 'ok' });
   });
 
-  it('GET /products returns the full catalog', async () => {
-    const res = await fetch(`${baseUrl}/products`);
-    expect(res.status).toBe(200);
-    expect(await res.json()).toEqual(products);
-  });
-
-  it('GET /api/products also returns the full catalog', async () => {
+  it('GET /api/products returns the full catalog', async () => {
     const res = await fetch(`${baseUrl}/api/products`);
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual(products);
   });
 
-  it('GET /products/:id returns a single product', async () => {
+  it('GET /api/products/:id returns a single product', async () => {
     const target = products[1];
-    const res = await fetch(`${baseUrl}/products/${target.id}`);
+    const res = await fetch(`${baseUrl}/api/products/${target.id}`);
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual(target);
   });
 
-  it('GET /products/:id returns a 404 with a JSON error body for an unknown id', async () => {
-    const res = await fetch(`${baseUrl}/products/does-not-exist`);
+  it('GET /api/products/:id returns a 404 with a JSON error body for an unknown id', async () => {
+    const res = await fetch(`${baseUrl}/api/products/does-not-exist`);
     expect(res.status).toBe(404);
     expect(await res.json()).toMatchObject({ message: expect.any(String) });
   });
 
-  it('sends permissive CORS headers by default', async () => {
+  it('the unprefixed /products route is no longer mounted (regression test for the /api-only route change)', async () => {
     const res = await fetch(`${baseUrl}/products`);
+    expect(res.status).toBe(404);
+  });
+
+  it('sends permissive CORS headers by default', async () => {
+    const res = await fetch(`${baseUrl}/api/products`);
     expect(res.headers.get('access-control-allow-origin')).toBe('*');
   });
 
   it('sends security headers from helmet', async () => {
-    const res = await fetch(`${baseUrl}/products`);
+    const res = await fetch(`${baseUrl}/api/products`);
     expect(res.headers.get('x-content-type-options')).toBe('nosniff');
   });
 

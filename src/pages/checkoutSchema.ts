@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const checkoutSchema = z.object({
-  fullName: z.string().trim().min(2, 'Enter your full name'),
+  fullName: z.string().min(2, 'Enter your full name').transform((value) => value.trim()),
   email: z.string().trim().email('Enter a valid email address'),
   address: z.string().trim().min(5, 'Enter a shipping address'),
   cardNumber: z

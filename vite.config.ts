@@ -14,5 +14,6 @@ export default defineConfig({
     // discovery — without this exclude, Vitest tries to run them and
     // Playwright errors with "did not expect test() to be called here."
     exclude: [...configDefaults.exclude, 'e2e/**'],
+    globalSetup: ['./tests/globalSetup.ts'],
   },
 });

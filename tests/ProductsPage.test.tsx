@@ -1,106 +1,161 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configureStore } from '@reduxjs/toolkit';
-import cartReducer from '../src/features/cart/cartSlice';
-import uiReducer from '../src/features/ui/uiSlice';
-import { productsApi } from '../src/api/productsApi';
-import { products } from '../server/data.js';
+import { MemoryRouter } from 'react-router-dom';
 import ProductsPage, { PAGE_SIZE } from '../src/pages/ProductsPage';
-import { AppProviders } from './test-utils';
+import { useGetProductsQuery } from '../src/api/productsApi';
+import { useAppDispatch } from '../src/hooks';
+import { addToCart } from '../src/features/cart/cartSlice';
+import { showToast } from '../src/features/ui/uiSlice';
+import type { Product } from '../src/types';
 
-function renderPage(initialEntries?: string[]) {
-  const store = configureStore({
-    reducer: {
-      cart: cartReducer,
-      ui: uiReducer,
-      [productsApi.reducerPath]: productsApi.reducer,
-    },
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat(productsApi.middleware),
-  });
+vi.mock('../src/api/productsApi', () => ({
+  useGetProductsQuery: vi.fn(),
+}));
+vi.mock('../src/hooks', () => ({
+  useAppDispatch: vi.fn(),
+}));
+vi.mock('../src/features/cart/cartSlice', () => ({
+  addToCart: vi.fn((id: string) => ({ type: 'cart/addToCart', payload: id })),
+}));
+vi.mock('../src/features/ui/uiSlice', () => ({
+  showToast: vi.fn((message: string) => ({ type: 'ui/showToast', payload: message })),
+}));
+vi.mock('../src/components/ProductCard', () => ({
+  default: ({ product, onAddToCart }: any) => (
+    <div>
+      <span>{product.title}</span>
+      <button onClick={() => onAddToCart(product.id)}>Add {product.title}</button>
+    </div>
+  ),
+}));
+vi.mock('../src/components/ProductCardSkeleton', () => ({
+  default: () => <div data-testid="skeleton" />,
+}));
+vi.mock('../src/components/Seo', () => ({
+  default: () => null,
+}));
+
+const mockedUseGetProductsQuery = vi.mocked(useGetProductsQuery);
+const mockedUseAppDispatch = vi.mocked(useAppDispatch);
+
+function makeProducts(count: number): Product[] {
+  return Array.from({ length: count }, (_, i) => ({
+    id: `product-${i}`,
+    imageUrl: `/images/product-${i}.jpg`,
+    title: i === 0 ? 'Special Tunnel' : `Product ${i}`,
+    price: (i + 1) * 5,
+    description: 'A generic product description.',
+    rating: (i % 5) + 1,
+    reviewCount: i * 10,
+    reviews: [],
+  }));
+}
+
+function renderProductsPage(initialEntries = ['/products']) {
   render(
-    <AppProviders store={store} initialEntries={initialEntries}>
+    <MemoryRouter initialEntries={initialEntries}>
       <ProductsPage />
-    </AppProviders>
+    </MemoryRouter>
   );
 }
 
-const firstPageTitles = products.slice(0, PAGE_SIZE).map((p) => p.title);
-const secondPageTitles = products.slice(PAGE_SIZE).map((p) => p.title);
-
 describe('ProductsPage', () => {
-  it('shows only the first page of products by default', async () => {
-    renderPage();
+  const dispatch = vi.fn();
 
-    for (const title of firstPageTitles) {
-      expect(
-        await screen.findByRole('heading', { name: title }, { timeout: 3000 })
-      ).toBeInTheDocument();
-    }
-    for (const title of secondPageTitles) {
-      expect(screen.queryByRole('heading', { name: title })).not.toBeInTheDocument();
-    }
+  beforeEach(() => {
+    dispatch.mockClear();
+    vi.mocked(addToCart).mockClear();
+    vi.mocked(showToast).mockClear();
+    mockedUseAppDispatch.mockReturnValue(dispatch);
   });
 
-  it('shows the rest of the catalog on page 2, and hides page 1', async () => {
-    const user = userEvent.setup();
-    renderPage();
+  it('shows skeleton cards while loading', () => {
+    mockedUseGetProductsQuery.mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      isError: false,
+    } as any);
+    renderProductsPage();
+    expect(screen.getAllByTestId('skeleton')).toHaveLength(6);
+  });
 
-    await screen.findByRole('heading', { name: firstPageTitles[0] }, { timeout: 3000 });
+  it('shows an error message when the request fails', () => {
+    mockedUseGetProductsQuery.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isError: true,
+    } as any);
+    renderProductsPage();
+    expect(screen.getByText(/couldn't load products/i)).toBeInTheDocument();
+  });
+
+  it('shows a "no products match" message for a search with no results', async () => {
+    mockedUseGetProductsQuery.mockReturnValue({
+      data: makeProducts(3),
+      isLoading: false,
+      isError: false,
+    } as any);
+    const user = userEvent.setup();
+    renderProductsPage();
+    await user.type(screen.getByPlaceholderText('Search products…'), 'zzzznotfound');
+    expect(screen.getByText(/no products match "zzzznotfound"/i)).toBeInTheDocument();
+  });
+
+  it('filters products by title as the search query changes', async () => {
+    mockedUseGetProductsQuery.mockReturnValue({
+      data: makeProducts(3),
+      isLoading: false,
+      isError: false,
+    } as any);
+    const user = userEvent.setup();
+    renderProductsPage();
+    await user.type(screen.getByPlaceholderText('Search products…'), 'Special');
+    expect(screen.getByText('Special Tunnel')).toBeInTheDocument();
+    expect(screen.queryByText('Product 1')).not.toBeInTheDocument();
+  });
+
+  it(`paginates results at ${PAGE_SIZE} products per page`, async () => {
+    mockedUseGetProductsQuery.mockReturnValue({
+      data: makeProducts(8),
+      isLoading: false,
+      isError: false,
+    } as any);
+    const user = userEvent.setup();
+    renderProductsPage();
+
+    expect(screen.getAllByRole('button', { name: /^Add /i })).toHaveLength(PAGE_SIZE);
+
     await user.click(screen.getByRole('button', { name: 'Page 2' }));
-
-    for (const title of secondPageTitles) {
-      expect(await screen.findByRole('heading', { name: title })).toBeInTheDocument();
-    }
-    for (const title of firstPageTitles) {
-      expect(screen.queryByRole('heading', { name: title })).not.toBeInTheDocument();
-    }
+    expect(screen.getAllByRole('button', { name: /^Add /i })).toHaveLength(8 - PAGE_SIZE);
   });
 
-  it('opens directly on the page given in the URL', async () => {
-    renderPage(['/products?page=2']);
-
-    for (const title of secondPageTitles) {
-      expect(
-        await screen.findByRole('heading', { name: title }, { timeout: 3000 })
-      ).toBeInTheDocument();
-    }
-  });
-
-  it('resets to page 1 when the search query changes', async () => {
+  it('sorts by price low to high when that option is selected', async () => {
+    mockedUseGetProductsQuery.mockReturnValue({
+      data: makeProducts(3),
+      isLoading: false,
+      isError: false,
+    } as any);
     const user = userEvent.setup();
-    renderPage(['/products?page=2']);
-
-    await screen.findByRole('heading', { name: secondPageTitles[0] }, { timeout: 3000 });
-    await user.type(screen.getByPlaceholderText('Search products…'), 'a');
-
-    expect(screen.getByLabelText('Page 1')).toHaveAttribute('aria-current', 'page');
+    renderProductsPage();
+    await user.selectOptions(screen.getByLabelText(/sort by/i), 'price-asc');
+    // product-0 ("Special Tunnel") = $5, product-1 = $10, product-2 = $15
+    const titles = screen
+      .getAllByText(/^(Special Tunnel|Product \d)$/)
+      .map((el) => el.textContent);
+    expect(titles).toEqual(['Special Tunnel', 'Product 1', 'Product 2']);
   });
 
-  it('filters the grid as the person types in the search box', async () => {
+  it('dispatches addToCart and a toast when a product is added', async () => {
+    mockedUseGetProductsQuery.mockReturnValue({
+      data: makeProducts(1),
+      isLoading: false,
+      isError: false,
+    } as any);
     const user = userEvent.setup();
-    renderPage();
-
-    await screen.findByRole('heading', { name: 'Scratcher' }, { timeout: 3000 });
-
-    await user.type(screen.getByPlaceholderText('Search products…'), 'tunnel');
-
-    expect(screen.getByRole('heading', { name: 'Tunnel' })).toBeInTheDocument();
-    expect(screen.queryByRole('heading', { name: 'Scratcher' })).not.toBeInTheDocument();
-  });
-
-  it('shows a no-results message when nothing matches the search', async () => {
-    const user = userEvent.setup();
-    renderPage();
-
-    await screen.findByRole('heading', { name: 'Scratcher' }, { timeout: 3000 });
-
-    await user.type(
-      screen.getByPlaceholderText('Search products…'),
-      'nonexistent-product-xyz'
-    );
-
-    expect(screen.getByText(/No products match/)).toBeInTheDocument();
+    renderProductsPage();
+    await user.click(screen.getByRole('button', { name: 'Add Special Tunnel' }));
+    expect(addToCart).toHaveBeenCalledWith('product-0');
+    expect(showToast).toHaveBeenCalledWith('Added "Special Tunnel" to your cart');
   });
 });

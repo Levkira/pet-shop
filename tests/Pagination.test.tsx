@@ -4,65 +4,68 @@ import userEvent from '@testing-library/user-event';
 import Pagination, { getPaginationItems } from '../src/components/Pagination';
 
 describe('getPaginationItems', () => {
-  it('returns nothing for a single page', () => {
+  it('returns an empty array when there is one page or fewer', () => {
     expect(getPaginationItems(1, 1)).toEqual([]);
+    expect(getPaginationItems(1, 0)).toEqual([]);
   });
 
-  it('shows every page when there are few of them', () => {
-    expect(getPaginationItems(1, 3)).toEqual([1, 2, 3]);
-    expect(getPaginationItems(2, 4)).toEqual([1, 2, 3, 4]);
+  it('returns all pages with no ellipsis when the range is small', () => {
+    expect(getPaginationItems(1, 4)).toEqual([1, 2, 3, 4]);
   });
 
-  it('windows around the current page with ellipses for large page counts', () => {
-    expect(getPaginationItems(1, 20)).toEqual([1, 2, 'ellipsis', 20]);
-    expect(getPaginationItems(10, 20)).toEqual([
-      1,
-      'ellipsis',
-      9,
-      10,
-      11,
-      'ellipsis',
-      20,
-    ]);
-    expect(getPaginationItems(20, 20)).toEqual([1, 'ellipsis', 19, 20]);
+  it('adds an ellipsis after the first page when current page is far from the start', () => {
+    expect(getPaginationItems(6, 10)).toEqual([1, 'ellipsis', 5, 6, 7, 'ellipsis', 10]);
+  });
+
+  it('omits the leading ellipsis when current page is near the start', () => {
+    expect(getPaginationItems(2, 10)).toEqual([1, 2, 3, 'ellipsis', 10]);
+  });
+
+  it('omits the trailing ellipsis when current page is near the end', () => {
+    expect(getPaginationItems(9, 10)).toEqual([1, 'ellipsis', 8, 9, 10]);
   });
 });
 
 describe('Pagination', () => {
-  it('renders nothing for a single page', () => {
+  it('renders nothing when there is only one page', () => {
     const { container } = render(
-      <Pagination page={1} totalPages={1} onPageChange={() => {}} />
+      <Pagination page={1} totalPages={1} onPageChange={vi.fn()} />
     );
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('marks the current page and disables the edge buttons appropriately', () => {
-    render(<Pagination page={1} totalPages={3} onPageChange={() => {}} />);
+  it('marks the current page with aria-current', () => {
+    render(<Pagination page={3} totalPages={5} onPageChange={vi.fn()} />);
+    expect(screen.getByRole('button', { name: 'Page 3' })).toHaveAttribute(
+      'aria-current',
+      'page'
+    );
+    expect(screen.getByRole('button', { name: 'Page 2' })).not.toHaveAttribute(
+      'aria-current'
+    );
+  });
 
-    expect(screen.getByLabelText('Page 1')).toHaveAttribute('aria-current', 'page');
+  it('disables Previous on the first page and Next on the last page', () => {
+    render(<Pagination page={1} totalPages={3} onPageChange={vi.fn()} />);
     expect(screen.getByRole('button', { name: 'Previous' })).toBeDisabled();
     expect(screen.getByRole('button', { name: 'Next' })).not.toBeDisabled();
   });
 
-  it('calls onPageChange with the target page when a page number is clicked', async () => {
+  it('calls onPageChange with the clicked page number', async () => {
     const user = userEvent.setup();
     const onPageChange = vi.fn();
-    render(<Pagination page={1} totalPages={3} onPageChange={onPageChange} />);
-
-    await user.click(screen.getByLabelText('Page 3'));
-
-    expect(onPageChange).toHaveBeenCalledWith(3);
+    render(<Pagination page={2} totalPages={5} onPageChange={onPageChange} />);
+    await user.click(screen.getByRole('button', { name: 'Page 4' }));
+    expect(onPageChange).toHaveBeenCalledWith(4);
   });
 
-  it('calls onPageChange with page - 1 / page + 1 for Previous/Next', async () => {
+  it('calls onPageChange with page - 1 and page + 1 for Previous/Next', async () => {
     const user = userEvent.setup();
     const onPageChange = vi.fn();
-    render(<Pagination page={2} totalPages={3} onPageChange={onPageChange} />);
-
-    await user.click(screen.getByRole('button', { name: 'Next' }));
-    expect(onPageChange).toHaveBeenCalledWith(3);
-
+    render(<Pagination page={2} totalPages={5} onPageChange={onPageChange} />);
     await user.click(screen.getByRole('button', { name: 'Previous' }));
-    expect(onPageChange).toHaveBeenCalledWith(1);
+    expect(onPageChange).toHaveBeenLastCalledWith(1);
+    await user.click(screen.getByRole('button', { name: 'Next' }));
+    expect(onPageChange).toHaveBeenLastCalledWith(3);
   });
 });
