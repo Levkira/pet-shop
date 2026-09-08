@@ -26,7 +26,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
       </Link>
       <div className="flex flex-1 flex-col gap-2 p-4">
         <h3 className="font-display text-lg text-ink">
-          <Link to={`/products/${product.id}`} className="hover:underline">
+          <Link to={`/products/${product.id}`} className="block hover:underline">
             {product.title}
           </Link>
         </h3>
