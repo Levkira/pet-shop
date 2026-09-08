@@ -2,20 +2,20 @@ import { test, expect } from '@playwright/test';
 
 test('searching narrows the product grid', async ({ page }) => {
   await page.goto('/products');
-  await expect(page.locator('a[href^="/products/"]').first()).toBeVisible();
+  await expect(page.locator('h3 a[href^="/products/"]').first()).toBeVisible();
 
-  const initialCount = await page.locator('a[href^="/products/"]').count();
+  const initialCount = await page.locator('h3 a[href^="/products/"]').count();
 
   await page.getByPlaceholder('Search products…').fill('tunnel');
 
   await expect(page.getByRole('heading', { name: 'Tunnel' })).toBeVisible();
-  const filteredCount = await page.locator('a[href^="/products/"]').count();
+  const filteredCount = await page.locator('h3 a[href^="/products/"]').count();
   expect(filteredCount).toBeLessThan(initialCount);
 });
 
 test('sorting by price reorders the grid', async ({ page }) => {
   await page.goto('/products');
-  await expect(page.locator('a[href^="/products/"]').first()).toBeVisible();
+  await expect(page.locator('h3 a[href^="/products/"]').first()).toBeVisible();
 
   await page.getByLabel('Sort by').selectOption('price-asc');
 
@@ -27,6 +27,8 @@ test('sorting by price reorders the grid', async ({ page }) => {
 
 test('clicking a product opens its detail page with reviews', async ({ page }) => {
   await page.goto('/products');
+
+  await page.getByPlaceholder('Search products…').fill('tunnel');
   await page.getByRole('heading', { name: 'Tunnel' }).click();
 
   await expect(page).toHaveURL(/\/products\/.+/);
