@@ -6,14 +6,12 @@ import type { CartItem } from './types';
 
 const CART_STORAGE_KEY = 'pet-shop:cart';
 
-function loadCartFromStorage(): CartItem[] | undefined {
+function loadCartFromStorage(): CartItem[] {
   try {
     const raw = localStorage.getItem(CART_STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as CartItem[]) : undefined;
+    return raw ? (JSON.parse(raw) as CartItem[]) : [];
   } catch {
-    // Corrupt or inaccessible storage (e.g. private browsing) — fall back
-    // to the slice's own empty-array initial state instead of crashing.
-    return undefined;
+    return [];
   }
 }
 
@@ -28,13 +26,8 @@ export const store = configureStore({
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(productsApi.middleware),
-  // Redux DevTools + Immer/serializability checks are wired up
-  // automatically by configureStore — no manual __REDUX_DEVTOOLS_EXTENSION__
-  // wiring needed like in the old store.js.
 });
 
-// Persist the cart on every change so a page refresh doesn't lose it —
-// the original app had no persistence at all.
 store.subscribe(() => {
   try {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(store.getState().cart));

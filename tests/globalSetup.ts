@@ -6,6 +6,6 @@ export default async function setup() {
 
   return () =>
     new Promise<void>((resolve, reject) => {
-      server.close((err) => (err ? reject(err) : resolve()));
+      server.close((err?: Error) => (err ? reject(err) : resolve()));
     });
 }

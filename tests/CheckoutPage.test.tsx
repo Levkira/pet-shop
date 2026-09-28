@@ -39,17 +39,6 @@ const validValues = {
   expiry: '09/27',
 };
 
-async function fillValidForm(user: ReturnType<typeof userEvent.setup>) {
-  await user.type(screen.getByPlaceholderText('Jane Appleseed'), validValues.fullName);
-  await user.type(screen.getByPlaceholderText('jane@example.com'), validValues.email);
-  await user.type(screen.getByPlaceholderText('123 Bark Ave'), validValues.address);
-  await user.type(
-    screen.getByPlaceholderText('4242 4242 4242 4242'),
-    validValues.cardNumber
-  );
-  await user.type(screen.getByPlaceholderText('MM/YY'), validValues.expiry);
-}
-
 describe('CheckoutPage', () => {
   const dispatch = vi.fn();
 
