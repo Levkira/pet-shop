@@ -1,13 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { Product } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
-if (!API_BASE_URL) {
-  throw new Error(
-    'VITE_API_BASE_URL is not set. Configure it in your .env file to point at the backend API.'
-  );
-}
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 export const productsApi = createApi({
   reducerPath: 'productsApi',
