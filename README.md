@@ -1,4 +1,4 @@
-# 🐾 Pet Shop
+# 🐾 Pet Shop - https://pet-shop-store-app.vercel.app/
 
 A small e-commerce demo — browse pet products, read reviews, add them to
 a cart, and check out. React + TypeScript + Redux Toolkit on the
